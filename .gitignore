@@ -1,0 +1,38 @@
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.build/
+.eggs/
+*.egg-info/
+
+# Entornos
+.env
+.venv/
+venv/
+ENV/
+
+# Data outputs
+/data/raw/*
+!/data/raw/.gitkeep
+/data/interim/*
+!/data/interim/.gitkeep
+/data/processed/*
+!/data/processed/.gitkeep
+/data/external/*
+!/data/external/.gitkeep
+
+# Logs
+logs/
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Streamlit
+.streamlit/
