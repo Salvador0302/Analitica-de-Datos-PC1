@@ -1,0 +1,141 @@
+xLayer: denuncias (ID: 0)
+Name: denuncias
+
+Display Field: ubigeo_cia_registro
+
+Type: Feature Layer
+
+Geometry Type: esriGeometryPoint
+
+Description:
+
+Copyright Text:
+
+Default Visibility: true
+
+MaxRecordCount: 1000
+
+Supported Query Formats: JSON, geoJSON
+
+Min Scale: 0
+
+Max Scale: 0
+
+Supports Advanced Queries: true
+
+Supports Statistics: true
+
+Has Labels: false
+
+Can Modify Layer: true
+
+Can Scale Symbols: false
+
+Use Standardized Queries: true
+
+Supports Datum Transformation: true
+
+Extent:
+XMin: -81.32448887499999
+YMin: -18.348545393999927
+XMax: -68.81833699999999
+YMax: -0.11968399999994972
+Spatial Reference: 4326  (4326)
+
+
+Drawing Info:
+Renderer:
+Simple Renderer:
+Symbol:
+Style: esriSMSCircle
+Color: [143, 153, 0, 255]
+Size: 4.0
+Angle: 0.0
+XOffset: 0
+YOffset: 0
+Outline:
+[0, 0, 0, 255] Width: 1
+Label:
+Description:
+Transparency: 0
+Labeling Info:
+Advanced Query Capabilities:
+Supports Statistics: true
+Supports OrderBy: true
+Supports Distinct: true
+Supports Pagination: true
+Supports TrueCurve: true
+Supports Returning Query Extent: true
+Supports Query With Distance: true
+Supports Sql Expression: true
+Supports Query With ResultType: false
+Supports Returning Geometry Centroid: false
+
+HasZ: false
+
+HasM: false
+
+Has Attachments: false
+
+HTML Popup Type: esriServerHTMLPopupTypeAsHTMLText
+
+Type ID Field: null
+
+Fields:
+shape ( type: esriFieldTypeGeometry, alias: shape )
+id_dgc ( type: esriFieldTypeInteger, alias: id_dgc )
+ubigeo_cia_registro ( type: esriFieldTypeString, alias: ubigeo_cia_registro, length: 6 )
+id_comisaria_registro ( type: esriFieldTypeInteger, alias: id_comisaria_registro )
+comisaria_registro ( type: esriFieldTypeString, alias: comisaria_registro, length: 250 )
+ubic_comisaria_registro ( type: esriFieldTypeString, alias: ubic_comisaria_registro, length: 250 )
+ubigeo_cia_hecho ( type: esriFieldTypeString, alias: ubigeo_cia_hecho, length: 6 )
+comisaria_hecho ( type: esriFieldTypeString, alias: comisaria_hecho, length: 250 )
+tipo_via_hecho ( type: esriFieldTypeString, alias: tipo_via_hecho, length: 250 )
+cuadra_hecho ( type: esriFieldTypeInteger, alias: cuadra_hecho )
+direccion_hecho ( type: esriFieldTypeString, alias: direccion_hecho, length: 250 )
+fecha_hora_hecho ( type: esriFieldTypeDate, alias: fecha_hora_hecho, length: 8 )
+turno_hecho ( type: esriFieldTypeString, alias: turno_hecho, length: 20 )
+año_hecho ( type: esriFieldTypeInteger, alias: año_hecho )
+mes_hecho ( type: esriFieldTypeInteger, alias: mes_hecho )
+dia_hecho ( type: esriFieldTypeInteger, alias: dia_hecho )
+ubigeo_hecho_delito ( type: esriFieldTypeString, alias: ubigeo_hecho_delito, length: 6 )
+lat_hecho ( type: esriFieldTypeDouble, alias: lat_hecho )
+long_hecho ( type: esriFieldTypeDouble, alias: long_hecho )
+id_dpto_hecho ( type: esriFieldTypeString, alias: id_dpto_hecho, length: 2 )
+departamento_hecho ( type: esriFieldTypeString, alias: departamento_hecho, length: 25 )
+id_prov_hecho ( type: esriFieldTypeString, alias: id_prov_hecho, length: 4 )
+provincia_hecho ( type: esriFieldTypeString, alias: provincia_hecho, length: 40 )
+id_dist_hecho ( type: esriFieldTypeString, alias: id_dist_hecho, length: 6 )
+distrito_hecho ( type: esriFieldTypeString, alias: distrito_hecho, length: 50 )
+solo_denuncia ( type: esriFieldTypeInteger, alias: solo_denuncia )
+es_delito_x ( type: esriFieldTypeString, alias: es_delito_x, length: 250 )
+cod_uni_hecho ( type: esriFieldTypeString, alias: cod_uni_hecho, length: 6 )
+cod_cpnp_hecho ( type: esriFieldTypeString, alias: cod_cpnp_hecho, length: 4 )
+id_materia_hecho ( type: esriFieldTypeInteger, alias: id_materia_hecho )
+materia_hecho ( type: esriFieldTypeString, alias: materia_hecho, length: 250 )
+id_tipo_hecho ( type: esriFieldTypeInteger, alias: id_tipo_hecho )
+tipo_hecho ( type: esriFieldTypeString, alias: tipo_hecho, length: 250 )
+id_subtipo_hecho ( type: esriFieldTypeInteger, alias: id_subtipo_hecho )
+subtipo_hecho ( type: esriFieldTypeString, alias: subtipo_hecho, length: 250 )
+id_modalidad_hecho ( type: esriFieldTypeInteger, alias: id_modalidad_hecho )
+modalidad_hecho ( type: esriFieldTypeString, alias: modalidad_hecho, length: 250 )
+cod_macroregpol_hecho ( type: esriFieldTypeString, alias: cod_macroregpol_hecho, length: 2 )
+macroregpol_hecho ( type: esriFieldTypeString, alias: macroregpol_hecho, length: 50 )
+cod_regpol_hecho ( type: esriFieldTypeString, alias: cod_regpol_hecho, length: 4 )
+regionpol_hecho ( type: esriFieldTypeString, alias: regionpol_hecho, length: 50 )
+cod_divpol_divopus_hecho ( type: esriFieldTypeString, alias: cod_divpol_divopus_hecho, length: 5 )
+divpol_divopus_hecho ( type: esriFieldTypeString, alias: divpol_divopus_hecho, length: 50 )
+fuente ( type: esriFieldTypeString, alias: fuente, length: 20 )
+tipologias_ia ( type: esriFieldTypeSmallInteger, alias: tipologia_ia )
+estado ( type: esriFieldTypeSmallInteger, alias: estado )
+estado_coord ( type: esriFieldTypeString, alias: estado_coord, length: 20 )
+observacion ( type: esriFieldTypeString, alias: observacion, length: 50 )
+objectid ( type: esriFieldTypeOID, alias: objectid )
+fecha_hora_registro_hecho ( type: esriFieldTypeDate, alias: fecha_hora_registro_hecho, length: 8 )
+barrio ( type: esriFieldTypeString, alias: BARRIO, length: 255 )
+comisaria ( type: esriFieldTypeString, alias: COMISARIA, length: 255 )
+departamento ( type: esriFieldTypeString, alias: DEPARTAMENTO, length: 255 )
+provincia ( type: esriFieldTypeString, alias: PROVINCIA, length: 255 )
+distrito ( type: esriFieldTypeString, alias: DISTRITO, length: 255 )
+indice_priorizacion ( type: esriFieldTypeString, alias: INDICE_PRIORIZACION, length: 255 )
+fecha_inaguracion ( type: esriFieldTypeDate, alias: FECHA_INAGURACION, length: 8 )

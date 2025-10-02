@@ -1,0 +1,34 @@
+{
+    "estado_coord_cleaning": {
+        "description": "Se unificaron valores en la columna 'estado_coord'.",
+        "mapping": {
+            "SIN COORDENADA XX": "SIN COORDENADA",
+            "SIN COORDENADA YY": "SIN COORDENADA"
+        }
+    },
+    "turno_hecho_encoding": {
+        "description": "Codificación ordinal de la columna 'turno_hecho'.",
+        "mapping": {
+            "0": "madrugada",
+            "1": "mañana",
+            "2": "tarde",
+            "3": "noche"
+        }
+    },
+    "periodo_dia_binning": {
+        "description": "Nueva columna creada agrupando la hora de 'fecha_hora_hecho'.",
+        "bins": {
+            "0-5": "Madrugada",
+            "6-11": "Mañana",
+            "12-17": "Tarde",
+            "18-23": "Noche"
+        }
+    },
+    "tiene_coordenada_encoding": {
+        "description": "Codificación binaria (0/1) creada a partir de 'estado_coord' limpio.",
+        "mapping": {
+            "CON COORDENADA": 1,
+            "SIN COORDENADA": 0
+        }
+    }
+}

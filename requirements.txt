@@ -5,6 +5,14 @@ streamlit>=1.36.0
 python-dotenv>=1.0.0
 pyyaml>=6.0.0
 
+# Dependencias para API
+fastapi
+uvicorn
+numpy
+
+# Visualización
+plotly>=5.0.0
+
 # (Opcional) scraping avanzado
 # beautifulsoup4>=4.12.0
 # selenium>=4.0.0
