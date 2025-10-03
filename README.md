@@ -1,45 +1,77 @@
 # Analítica de Datos - Seguridad Ciudadana (PC1)
 
-Proyecto para recolectar, depurar, analizar y visualizar denuncias de seguridad ciudadana (fuente ArcGIS / MININTER) mediante un pipeline reproducible y una capa de presentación (Streamlit + API FastAPI).
+Proyecto para recolectar, depurar, analizar y visualizar denuncias de seguridad ciudadana (fuente ArcGIS / MININTER) mediante un pipeline reproducible.
 
 ## 📌 Objetivos
-1. Ingesta de datos (scraping / API) y almacenamiento bruto.
-2. Limpieza, estandarización y enriquecimiento (EDA sistematizado).
-3. Generación de datasets procesados y visualizaciones interactivas.
-4. Exposición vía aplicación web y endpoints reutilizables.
+1. Ingesta de datos (scraping / API) y almacenamiento crudo.
+2. Limpieza y estandarización reproducible (pipeline modular).
+3. Validación y consolidación en un dataset final (`denuncias_final.csv`).
+4. Generación de visualizaciones interactivas (HTML Plotly) sin acoplar lógica a la presentación.
+5. (Opcional) Exponer el dataset / HTML vía FastAPI.
 
-## 🧭 Visión Rápida del Flujo
-Scraping → Limpieza/Transformación → Dataset Final → Visualizaciones (HTML / App) → API / Consumo externo.
+## 🧭 Flujo General
+Ingesta → Limpieza / Transformación → Dataset Final → Visualizaciones → (Opcional) API.
 
 | Etapa | Entrada | Salida | Carpeta |
 |-------|---------|--------|---------|
-| Ingesta | Servicios ArcGIS | CSV/GeoJSON crudo | `data/raw` |
-| Limpieza / Intermedio | Raw | Tablas depuradas parciales | `data/interim` |
-| Procesado final | Interim | Dataset listo (ej. `denuncias_final.csv`) | `data/processed` |
-| Visualización | Processed | Mapas / Gráficos HTML | `reports/visualizations/` + `src/api/templates/` |
-| App / API | Processed + HTML | UI interactiva / Endpoints | `src/main.py` / `src/api/` |
+| Ingesta | Servicios ArcGIS | Datos crudos (CSV / JSON / GeoJSON) | `data/raw/` |
+| Limpieza / Intermedio | Raw | Tablas depuradas parciales | `data/interim/` |
+| Procesado final | Interim | `denuncias_final.csv` | `data/processed/` |
+| Visualización | Processed | Gráficos / mapas HTML | `reports/visualizations/` |
+| API (opcional) | Processed / HTML | Endpoints de entrega | `src/api/` |
 
 ## 🗂️ Estructura Principal
 ```
-config.yaml              # Parámetros generales (paths, logging, scraping)
-requirements.txt         # Dependencias del entorno
-.env.sample              # Plantilla de variables de entorno
-data/                    # (Carpetas vacías en repositorio; se llenan localmente)
-	raw/                 # Datos crudos (no modificar 
-	interim/             # Datos intermedios / transformaciones
-	processed/           # Datos listos para análisis / modelo
-docs/                    # Documentación y reportes EDA
-reports/visualizations/  # Salida de artefactos HTML (mapas/gráficos)
-scripts/                 # Orquestación (ejecutar scraping masivo)
+requirements.txt              # Dependencias del entorno
+.env.sample                   # Variables de entorno de ejemplo
+config/
+  config.yaml                 # Parámetros generales (paths, scraping, logging)
+  scraping_periods.yaml       # (Opcional) definición de periodos/años a ingestar
+data/
+  raw/                        # Datos crudos (no modificar manualmente)
+  interim/                    # Datos intermedios (pasos de limpieza)
+  processed/                  # Dataset(s) finales (ej. denuncias_final.csv)
+  external/                   # (Opcional) datos externos complementarios
+docs/
+  architecture.md
+  data_dictionary.md
+  eda_history/                # Reportes y narrativa de EDA histórica
+notebooks/
+  01_limpieza_exploracion.ipynb  # Exploración; la lógica estable vive en src/
+reports/
+  visualizations/             # ÚNICA carpeta de artefactos HTML finales
+scripts/
+  run_ingestion.py            # Ejecuta solo ingesta
+  run_processing.py           # Ejecuta limpieza / transformación
+  run_visualizations.py       # Genera todas las visualizaciones
+  run_full_pipeline.py        # Orquesta extremo a extremo
 src/
-	main.py                # Entrada Streamlit
-	api/                   # FastAPI + plantillas HTML
-	app/                   # Layout y componentes UI
-	data_collection/       # Módulos de descarga (por período)
-	eda/                   # Scripts EDA numerados
-	utils/                 # Utilidades (logger, paths, helpers)
-tests/                   # Pruebas smoke
+  api/                        # (Opcional) Endpoints FastAPI mínimos
+    main.py
+  ingestion/                  # Lógica de descarga parametrizada
+    fetch.py
+    periods.py
+  processing/                 # Limpieza, transformación y validaciones
+    clean.py
+    transform.py
+    validate.py
+  visualization/              # Generación de gráficos (Plotly)
+    build_charts.py
+    maps.py
+    run_all.py
+  utils/                      # Utilidades compartidas
+    logger.py
+    paths.py
+    config.py
+tests/                        # (Sugerido) pruebas unitarias / de esquema
 ```
+
+### Principios
+- Código ≠ Artefactos: `src/` contiene únicamente lógica Python reutilizable.
+- Artefactos (HTML finales y CSV procesados) se generan fuera de `src/`.
+- Notebook sólo para exploración; reproducibilidad garantizada por scripts.
+- Ingesta parametrizada (sin proliferación de archivos por periodo).
+- Visualizaciones reproducibles con un comando.
 
 ## 🧪 Requisitos
 | Recurso | Versión recomendada |
@@ -69,48 +101,80 @@ Si no se usa Mapbox, los mapas que lo requieran no se renderizarán correctament
 Define rutas base y parámetros de scraping (user agent, timeout). Se puede extender para añadir límites de tasa, proxies, etc.
 
 ## 🚀 Ejecución de Componentes
-### 1. Recolección / Descarga
-Scripts específicos por semestre/año en `src/data_collection/` (ej: `codigo_2024_S1.py`). Para lanzar múltiples:
+### 1. Ingesta
 ```bash
-python scripts/ejecutar_todos_v2.py
+python scripts/run_ingestion.py
 ```
-Salidas crudas: `data/raw/` (o la ruta definida internamente). Ajustar rutas en los scripts si se requiere portabilidad (algunos ejemplos usan rutas absolutas Windows: reemplazarlas por relativas antes de producción).
+Lee periodos (si existen) desde `config/scraping_periods.yaml`.
 
-### 2. Pipeline EDA / Limpieza
-Los pasos están numerados (`01_...`, `02_...`). Convertir lógica validada en funciones reutilizables dentro de `src/eda/` o notebooks migrados. Resultado final esperado: `data/processed/denuncias_final.csv` (nombre puede variar según la convención final adoptada).
-
-### 3. Aplicación Streamlit
+### 2. Procesamiento / Limpieza
 ```bash
-streamlit run src/main.py
+python scripts/run_processing.py
 ```
-Accede en: http://localhost:8501
+Genera/actualiza `data/interim/` y `data/processed/denuncias_final.csv`.
 
-### 4. API FastAPI (servir visualizaciones HTML)
+### 3. Visualizaciones
+```bash
+python scripts/run_visualizations.py
+```
+Genera HTML en `reports/visualizations/`.
+
+### 4. Pipeline completo
+```bash
+python scripts/run_full_pipeline.py
+```
+
+### 5. API (opcional)
 ```bash
 uvicorn src.api.main:app --reload
 ```
-Accede en: http://127.0.0.1:8000
+Sirve dataset final o gráficos (si se requiere) en http://127.0.0.1:8000
 
-### 5. Pruebas
+### 6. Pruebas (si existen)
 ```bash
 pytest -q
 ```
 
 ## 📊 Visualizaciones
-Archivos HTML generados (mapas / gráficos) se almacenan en:
-- `reports/visualizations/` (output general)
-- `src/api/templates/` (los que la API expone)
+Política:
+- Única carpeta de salida: `reports/visualizations/`.
+- No duplicar archivos en `src/api/templates/` (evitar HTML pesados allí).
+- Nombrado en snake_case: `barras_top_delitos.html`, `heatmap_hora_dia.html`, etc.
+- Variantes usar sufijos: `_filtrada`, `_detalle`.
 
-Para integrarlos externamente: incrustar el HTML o servirlo via endpoint FastAPI.
+### Servir visualizaciones por API (opcional)
+```python
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
+from pathlib import Path
+
+app = FastAPI()
+VIZ_DIR = Path(__file__).resolve().parents[2] / "reports" / "visualizations"
+
+@app.get("/viz/{archivo}")
+def get_viz(archivo: str):
+	fp = VIZ_DIR / archivo
+	if not fp.exists():
+		raise HTTPException(404, "No encontrado")
+	return FileResponse(fp)
+```
+
+### Recomendación de .gitignore
+Si los HTML se pueden regenerar:
+```
+reports/visualizations/
+!reports/visualizations/README.md
+```
 
 ## 🧱 Logger
-Configurado en `src/utils/logger.py`, genera `logs/app.log`. Ajustar nivel vía variable de entorno o `config.yaml`.
+Configurado en `src/utils/logger.py`. Ajustar nivel mediante variable de entorno (`LOG_LEVEL`) o entrada en `config/config.yaml`.
 
 ## 🧪 Calidad / Buenas Prácticas
-- Nombrado consistente de scripts por periodo (`codigo_<AÑO>_<S#>.py`).
-- Separar lógica (funciones puras) de ejecución (bloque `if __name__ == "__main__"`).
-- Evitar rutas absolutas (migrar a `Path` relativas + `config.yaml`).
-- Añadir tests para módulos críticos (descarga, transformaciones clave).
+- Ingesta parametrizada (un solo módulo + configuración).
+- Lógica pura modular (import seguro, sin efectos colaterales).
+- Rutas relativas con `pathlib.Path` + centralización en `config/` y `utils/paths.py`.
+- Validación de esquema antes de exportar dataset final (pandera/pydantic recomendado).
+- Reproducibilidad: artefactos grandes pueden excluirse del control de versiones.
 
 ## ❗ Problemas Frecuentes
 | Situación | Causa | Solución |
@@ -121,11 +185,11 @@ Configurado en `src/utils/logger.py`, genera `logs/app.log`. Ajustar nivel vía 
 | Rutas Windows en Linux | Hardcode previo | Editar scripts y usar `os.path.join` / `pathlib.Path` |
 
 ## 🔮 Próximos Pasos (Roadmap sugerido)
-- Centralizar parámetros de scraping (años/semestres) en un YAML.
-- Incorporar caché incremental (solo nuevas denuncias).
-- Tests de validación de esquema (pydantic / pandera).
-- Dashboard de métricas (KPIs de delitos por turno / distrito).
-- Automatización (Makefile / task runner / GitHub Actions).
+- Consolidar refactor (eliminar scripts legacy duplicados si persisten).
+- Añadir validación de esquema (`processing/validate.py`).
+- Implementar caché incremental (solo periodos nuevos).
+- Generar solo visualizaciones seleccionadas vía flags / CLI.
+- Automatizar con pre-commit + CI (lint, tests, generación selectiva).
 
 ## 🤝 Contribuir
 1. Crear rama (`feature/nombre-feature`).

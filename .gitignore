@@ -1,38 +1,29 @@
-# Archivos de Python
+# Cache de bytecode de Python (no necesario versionar)
 __pycache__/
+# Archivos compilados .pyc/.pyo/.pyd generados automáticamente
 *.py[cod]
-*.pyo
-*.pyd
-*.so
-.build/
-.eggs/
-*.egg-info/
 
-# Entornos
+# Archivo local de variables de entorno (puede contener credenciales)
 .env
+# Carpeta de entorno virtual (variante .venv)
 .venv/
+# Carpeta de entorno virtual (nombre común venv)
 venv/
-ENV/
 
-# Data outputs
-/data/raw/*
-!/data/raw/.gitkeep
-/data/interim/*
-!/data/interim/.gitkeep
-/data/processed/*
-!/data/processed/.gitkeep
-/data/external/*
-!/data/external/.gitkeep
-
-# Logs
+# Carpeta de logs generados por la aplicación (no relevante para el repo)
 logs/
 
-# Notebook checkpoints
+# Checkpoints automáticos de Jupyter (ruido)
 .ipynb_checkpoints/
 
-# Sistema
+# Datasets CSV grandes (evitar subir ~GB de datos)
+data/**/*.csv
+# Datasets Parquet grandes (formato columnar)
+data/**/*.parquet
+
+# Configuración y estado local de Streamlit (regenerable)
+.streamlit/
+
+# Archivos de metadatos
 .DS_Store
 Thumbs.db
-
-# Streamlit
-.streamlit/
