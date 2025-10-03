@@ -1,6 +1,6 @@
 # Analítica de Datos - Seguridad Ciudadana (PC1)
 
-Proyecto académico/grupal para recolectar, depurar, analizar y visualizar denuncias de seguridad ciudadana (fuente ArcGIS / MININTER) mediante un pipeline reproducible y una capa de presentación (Streamlit + API FastAPI).
+Proyecto para recolectar, depurar, analizar y visualizar denuncias de seguridad ciudadana (fuente ArcGIS / MININTER) mediante un pipeline reproducible y una capa de presentación (Streamlit + API FastAPI).
 
 ## 📌 Objetivos
 1. Ingesta de datos (scraping / API) y almacenamiento bruto.
@@ -25,9 +25,9 @@ config.yaml              # Parámetros generales (paths, logging, scraping)
 requirements.txt         # Dependencias del entorno
 .env.sample              # Plantilla de variables de entorno
 data/                    # (Carpetas vacías en repositorio; se llenan localmente)
-	raw/
-	interim/
-	processed/
+	raw/                 # Datos crudos (no modificar 
+	interim/             # Datos intermedios / transformaciones
+	processed/           # Datos listos para análisis / modelo
 docs/                    # Documentación y reportes EDA
 reports/visualizations/  # Salida de artefactos HTML (mapas/gráficos)
 scripts/                 # Orquestación (ejecutar scraping masivo)
