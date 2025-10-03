@@ -6,7 +6,6 @@ paths:
   data_raw: "data/raw"
   data_interim: "data/interim"
   data_processed: "data/processed"
-  data_external: "data/external"
 logging:
   level: "INFO"
 scraping:
