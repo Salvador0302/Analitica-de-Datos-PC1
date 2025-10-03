@@ -1,116 +1,140 @@
-# Analítica de Datos - PC1
+# Analítica de Datos - Seguridad Ciudadana (PC1)
 
-Proyecto grupal orientado a la obtención (web scraping), limpieza/análisis exploratorio (EDA) y visualización de datos sobre Seguridad Ciudadana.
+Proyecto académico/grupal para recolectar, depurar, analizar y visualizar denuncias de seguridad ciudadana (fuente ArcGIS / MININTER) mediante un pipeline reproducible y una capa de presentación (Streamlit + API FastAPI).
 
-## Objetivos
-1. Recolectar datos desde fuentes web (públicas o semi estructuradas).
-2. Estandarizar y limpiar la información para análisis.
-3. Generar indicadores y visualizaciones.
-4. Presentar resultados en una interfaz (ej. Streamlit).
+## 📌 Objetivos
+1. Ingesta de datos (scraping / API) y almacenamiento bruto.
+2. Limpieza, estandarización y enriquecimiento (EDA sistematizado).
+3. Generación de datasets procesados y visualizaciones interactivas.
+4. Exposición vía aplicación web y endpoints reutilizables.
 
-## Estructura del Proyecto
+## 🧭 Visión Rápida del Flujo
+Scraping → Limpieza/Transformación → Dataset Final → Visualizaciones (HTML / App) → API / Consumo externo.
+
+| Etapa | Entrada | Salida | Carpeta |
+|-------|---------|--------|---------|
+| Ingesta | Servicios ArcGIS | CSV/GeoJSON crudo | `data/raw` |
+| Limpieza / Intermedio | Raw | Tablas depuradas parciales | `data/interim` |
+| Procesado final | Interim | Dataset listo (ej. `denuncias_final.csv`) | `data/processed` |
+| Visualización | Processed | Mapas / Gráficos HTML | `reports/visualizations/` + `src/api/templates/` |
+| App / API | Processed + HTML | UI interactiva / Endpoints | `src/main.py` / `src/api/` |
+
+## 🗂️ Estructura Principal
 ```
-├── config.yaml              # Configuración general
-├── requirements.txt         # Dependencias
-├── .env.sample              # Variables de entorno ejemplo
-├── data/
-│   ├── raw/                 # Datos crudos (no modificar manualmente)
-│   ├── interim/             # Datos intermedios / transformaciones parciales
-│   ├── processed/           # Datos listos para análisis / modelo
-│   └── external/            # Datos externos suplementarios
-├── src/
-│   ├── main.py              # Punto de entrada de la app (Streamlit)
-│   ├── data_collection/     # Scripts de scraping / ingestión
-│   ├── eda/                 # Funciones de análisis exploratorio
-│   ├── app/                 # Layout y componentes UI
-│   └── utils/               # Utilidades (logging, paths, helpers)
-├── notebooks/               # Notebooks de exploración (no código de producción)
-├── tests/                   # Tests simples / smoke tests
-└── docs/                    # Documentación adicional
+config.yaml              # Parámetros generales (paths, logging, scraping)
+requirements.txt         # Dependencias del entorno
+.env.sample              # Plantilla de variables de entorno
+data/                    # (Carpetas vacías en repositorio; se llenan localmente)
+	raw/
+	interim/
+	processed/
+docs/                    # Documentación y reportes EDA
+reports/visualizations/  # Salida de artefactos HTML (mapas/gráficos)
+scripts/                 # Orquestación (ejecutar scraping masivo)
+src/
+	main.py                # Entrada Streamlit
+	api/                   # FastAPI + plantillas HTML
+	app/                   # Layout y componentes UI
+	data_collection/       # Módulos de descarga (por período)
+	eda/                   # Scripts EDA numerados
+	utils/                 # Utilidades (logger, paths, helpers)
+tests/                   # Pruebas smoke
 ```
 
-## Flujo de Trabajo (Pipeline Conceptual)
-1. Scraping / Ingesta: Guardar archivos originales en `data/raw`.
-2. Limpieza y normalización: Resultados a `data/interim`.
-3. Feature engineering / dataset final: Guardar en `data/processed`.
-4. Carga en la interfaz para visualización (gráficos, tablas, KPIs).
+## 🧪 Requisitos
+| Recurso | Versión recomendada |
+|---------|----------------------|
+| Python  | 3.10+                |
+| SO      | Linux / macOS / Windows |
 
-## Tecnologías Principales
-- **Análisis y Procesamiento de Datos**: `pandas`
-- **Recolección de Datos (Scraping)**: `requests`
-- **Visualizaciones Interactivas**: `plotly`
-- **Aplicación Web Interactiva**: `streamlit`
-- **API para Visualizaciones**: `fastapi`
-
-## Instalación Rápida
-Requiere Python 3.10+.
-
+## ⚙️ Instalación Rápida
 ```bash
-# 1. Crear y activar un entorno virtual
 python -m venv .venv
-source .venv/bin/activate  # En Windows: .venv\Scripts\activate
-
-# 2. Instalar dependencias
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install --upgrade pip
 pip install -r requirements.txt
-
-# 3. Configurar variables de entorno
-cp .env.sample .env
+cp .env.sample .env               # Luego editar .env
 ```
-Después de copiar, edita el archivo `.env` y añade tu token de Mapbox. Este token es necesario para generar las visualizaciones de mapas.
 
-## Ejecución
+## 🔐 Variables de Entorno (.env)
+| Variable | Descripción | Obligatorio |
+|----------|-------------|-------------|
+| MAPBOX_TOKEN | Token para mapas (Plotly/Mapbox) | Sí (para mapas) |
+| APP_ENV | entorno (dev/prod) | No |
+| LOG_LEVEL | Nivel logging (INFO/DEBUG) | No |
 
-El proyecto tiene tres componentes principales que se pueden ejecutar de forma independiente:
+Si no se usa Mapbox, los mapas que lo requieran no se renderizarán correctamente.
 
-### 1. Pipeline de Recolección de Datos
+## 🏗️ Configuración (`config.yaml`)
+Define rutas base y parámetros de scraping (user agent, timeout). Se puede extender para añadir límites de tasa, proxies, etc.
 
-Este script se encarga de descargar los datos de denuncias en paralelo. Es el primer paso y el más importante para obtener la información.
-
+## 🚀 Ejecución de Componentes
+### 1. Recolección / Descarga
+Scripts específicos por semestre/año en `src/data_collection/` (ej: `codigo_2024_S1.py`). Para lanzar múltiples:
 ```bash
 python scripts/ejecutar_todos_v2.py
 ```
+Salidas crudas: `data/raw/` (o la ruta definida internamente). Ajustar rutas en los scripts si se requiere portabilidad (algunos ejemplos usan rutas absolutas Windows: reemplazarlas por relativas antes de producción).
 
-Los archivos se guardarán en la carpeta `data_v2/`.
+### 2. Pipeline EDA / Limpieza
+Los pasos están numerados (`01_...`, `02_...`). Convertir lógica validada en funciones reutilizables dentro de `src/eda/` o notebooks migrados. Resultado final esperado: `data/processed/denuncias_final.csv` (nombre puede variar según la convención final adoptada).
 
-### 2. Aplicación de Visualización (Streamlit)
-
-La aplicación interactiva permite explorar los datos procesados. Asegúrate de haber ejecutado el pipeline de EDA primero.
-
+### 3. Aplicación Streamlit
 ```bash
 streamlit run src/main.py
 ```
+Accede en: http://localhost:8501
 
-### 3. API de Visualización (FastAPI)
-
-Expone visualizaciones como archivos HTML a través de endpoints. Útil para integrar los mapas en otras webs.
-
+### 4. API FastAPI (servir visualizaciones HTML)
 ```bash
 uvicorn src.api.main:app --reload
 ```
+Accede en: http://127.0.0.1:8000
 
-La API estará disponible en `http://127.0.0.1:8000`.
-
-## Convenciones
-- Código productivo en `src/`.
-- No subir datos sensibles ni crudos pesados (ya ignorados por `.gitignore`).
-- Notebooks: nombrar con prefijo incremental: `01_exploracion_inicial.ipynb`.
-- Funciones reutilizables deben migrarse desde notebooks a módulos en `src/`.
-
-## Tests
-Ejecutar smoke test:
+### 5. Pruebas
 ```bash
-python -m pytest -q
+pytest -q
 ```
 
-## Próximos Pasos Sugeridos
-- Implementar scraping real (requests + parsing HTML/JSON).
-- Añadir limpieza robusta (tipos, nulos, outliers).
-- Crear visualizaciones (Streamlit + Altair/Plotly).
-- Añadir perfilado de datos (ydata-profiling opcional).
-- Definir métricas clave de Seguridad Ciudadana.
+## 📊 Visualizaciones
+Archivos HTML generados (mapas / gráficos) se almacenan en:
+- `reports/visualizations/` (output general)
+- `src/api/templates/` (los que la API expone)
 
-## Autores
-Equipo del curso - PC1.
+Para integrarlos externamente: incrustar el HTML o servirlo via endpoint FastAPI.
+
+## 🧱 Logger
+Configurado en `src/utils/logger.py`, genera `logs/app.log`. Ajustar nivel vía variable de entorno o `config.yaml`.
+
+## 🧪 Calidad / Buenas Prácticas
+- Nombrado consistente de scripts por periodo (`codigo_<AÑO>_<S#>.py`).
+- Separar lógica (funciones puras) de ejecución (bloque `if __name__ == "__main__"`).
+- Evitar rutas absolutas (migrar a `Path` relativas + `config.yaml`).
+- Añadir tests para módulos críticos (descarga, transformaciones clave).
+
+## ❗ Problemas Frecuentes
+| Situación | Causa | Solución |
+|-----------|-------|----------|
+| Mapas no cargan | Falta `MAPBOX_TOKEN` | Añadir token en `.env` |
+| Descarga lenta / timeout | Límite servidor ArcGIS | Reducir ventana temporal o paginar por fecha |
+| Error GeoJSON → fallback JSON | Endpoint no soporta geometría directa | Se maneja automáticamente en scripts `codigo_*.py` |
+| Rutas Windows en Linux | Hardcode previo | Editar scripts y usar `os.path.join` / `pathlib.Path` |
+
+## 🔮 Próximos Pasos (Roadmap sugerido)
+- Centralizar parámetros de scraping (años/semestres) en un YAML.
+- Incorporar caché incremental (solo nuevas denuncias).
+- Tests de validación de esquema (pydantic / pandera).
+- Dashboard de métricas (KPIs de delitos por turno / distrito).
+- Automatización (Makefile / task runner / GitHub Actions).
+
+## 🤝 Contribuir
+1. Crear rama (`feature/nombre-feature`).
+2. Añadir/actualizar tests si aplica.
+3. Ejecutar `pytest -q` antes de hacer push.
+4. Abrir PR con descripción clara del cambio.
+
+## 👥 Autores
+Equipo del curso - PC1. Uso académico / demostrativo.
 
 ---
-> Mantener este README actualizado a medida que evoluciona el pipeline.
+Mantener este README alineado con el estado real del pipeline.
