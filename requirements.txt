@@ -12,12 +12,18 @@ numpy
 # Visualización interactiva (HTML)
 plotly>=5.0.0
 
+# EDA / visualización estática (necesarias para notebooks)
+matplotlib>=3.8.0
+seaborn>=0.13.0
+
+# Geoespacial (necesario para scripts de descarga)
+geopandas>=0.14
+shapely>=2.0
+pyproj>=3.6
+fiona>=1.9
+
 # (Opcional) scraping avanzado
 # beautifulsoup4>=4.12.0
 # selenium>=4.0.0
 # playwright>=1.40.0
-
-# (Opcional) EDA / visualización adicional
-# matplotlib>=3.8.0
-# seaborn>=0.13.0
 # ydata-profiling>=4.6.0

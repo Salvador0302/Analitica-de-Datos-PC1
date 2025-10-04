@@ -101,6 +101,14 @@ Si no se usa Mapbox, los mapas que lo requieran no se renderizarán correctament
 Define rutas base y parámetros de scraping (user agent, timeout). Se puede extender para añadir límites de tasa, proxies, etc.
 
 ## 🚀 Ejecución de Componentes
+### 0. Entorno (Windows PowerShell)
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
 ### 1. Ingesta
 ```bash
 python scripts/run_ingestion.py
@@ -134,6 +142,31 @@ Sirve dataset final o gráficos (si se requiere) en http://127.0.0.1:8000
 ```bash
 pytest -q
 ```
+
+## 📓 Ejecutar el EDA (notebooks)
+- Abre `notebooks/EDA.ipynb` en VS Code / Jupyter.
+- Asegúrate de tener el entorno activado y dependencias instaladas (matplotlib, seaborn, pandas, plotly).
+- Si necesitas leer los datos, el notebook ya apunta a `data/denuncias_final.csv`.
+
+## 🔎 Ver las visualizaciones HTML
+Opciones rápidas (Windows PowerShell):
+
+- Abrir un archivo específico en el navegador por defecto:
+```powershell
+Start-Process "d:\USER\SALVA\Desktop\A\Analitica-de-Datos-PC1\reports\visualizations\barras_apiladas_delito.html"
+```
+
+- Abrir todos los .html de la carpeta:
+```powershell
+Get-ChildItem "d:\USER\SALVA\Desktop\A\Analitica-de-Datos-PC1\reports\visualizations" -Filter *.html | ForEach-Object { Start-Process $_.FullName }
+```
+
+- Servir la carpeta en un servidor local (útil si algún gráfico usa CDN):
+```powershell
+cd d:\USER\SALVA\Desktop\A\Analitica-de-Datos-PC1\reports\visualizations
+python -m http.server 8000
+```
+Luego visita: `http://localhost:8000/`.
 
 ## 📊 Visualizaciones
 Política:
